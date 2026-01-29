@@ -1,0 +1,34 @@
+/*
+  Custom color palette for Abhinaya branding
+  - Teal Gelap / Tosca Tua: #0F6575
+  - Biru Cyan / Biru Langit: #2CB6D5
+  - Kuning Lemon / Lime: #DFE835
+  - Navy Gelap / Biru Malam: #121E2D
+*/
+
+:root {
+  --color-abhi-navy: #121E2D;
+  --color-abhi-teal: #0F6575;
+  --color-abhi-cyan: #2CB6D5;
+  --color-abhi-lemon: #DFE835;
+}
+
+.bg-abhi-navy { background-color: var(--color-abhi-navy) !important; }
+.bg-abhi-teal { background-color: var(--color-abhi-teal) !important; }
+.bg-abhi-cyan { background-color: var(--color-abhi-cyan) !important; }
+.bg-abhi-lemon { background-color: var(--color-abhi-lemon) !important; }
+
+.text-abhi-navy { color: var(--color-abhi-navy) !important; }
+.text-abhi-teal { color: var(--color-abhi-teal) !important; }
+.text-abhi-cyan { color: var(--color-abhi-cyan) !important; }
+.text-abhi-lemon { color: var(--color-abhi-lemon) !important; }
+
+.border-abhi-navy { border-color: var(--color-abhi-navy) !important; }
+.border-abhi-teal { border-color: var(--color-abhi-teal) !important; }
+.border-abhi-cyan { border-color: var(--color-abhi-cyan) !important; }
+.border-abhi-lemon { border-color: var(--color-abhi-lemon) !important; }
+
+/* Example gradient utility */
+.bg-abhi-gradient {
+  background: linear-gradient(90deg, #121E2D 0%, #0F6575 40%, #2CB6D5 100%) !important;
+}
