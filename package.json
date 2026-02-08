@@ -11,7 +11,7 @@
     "db:seed": "tsx lib/seed.ts",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
-    "postinstall": "npx prisma generate",
+    "postinstall": "npx prisma generate || true",
     "deploy": "vercel --prod",
     "deploy:preview": "vercel"
   },
@@ -52,6 +52,7 @@
     "@types/react-slick": "^0.23.13",
     "postcss": "^8.5.1",
     "tailwindcss": "^4.0.3",
+    "ts-node": "^10.9.2",
     "tsx": "^4.21.0"
   },
   "packageManager": "npm@10.2.4"
