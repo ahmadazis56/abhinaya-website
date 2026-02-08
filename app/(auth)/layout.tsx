@@ -1,5 +1,3 @@
-import PageIllustration from "@/components/page-illustration";
-
 export default function AuthLayout({
   children,
 }: {
@@ -7,7 +5,7 @@ export default function AuthLayout({
 }) {
   return (
     <main className="relative flex grow flex-col">
-      <PageIllustration multiple />
+      {/* <PageIllustration multiple /> */}
 
       {children}
     </main>

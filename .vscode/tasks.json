@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "TypeScript: Restart TS Server",
+      "type": "shell",
+      "command": "echo 'Please restart TypeScript server from Command Palette: Ctrl+Shift+P -> TypeScript: Restart TS Server'",
+      "problemMatcher": []
+    }
+  ]
+}

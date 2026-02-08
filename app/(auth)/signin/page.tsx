@@ -1,11 +1,24 @@
-export const metadata = {
-  title: "Sign In - Open PRO",
-  description: "Page description",
-};
+"use client"
 
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SignIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
+
+  const handleSignIn = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Simple hardcoded authentication
+    if (email === "admin" && password === "admin") {
+      router.push("/admin");
+    } else {
+      alert("Invalid credentials");
+    }
+  };
+
   return (
     <section>
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -17,7 +30,7 @@ export default function SignIn() {
             </h1>
           </div>
           {/* Contact form */}
-          <form className="mx-auto max-w-[400px]">
+          <form className="mx-auto max-w-[400px]" onSubmit={handleSignIn}>
             <div className="space-y-5">
               <div>
                 <label
@@ -31,6 +44,8 @@ export default function SignIn() {
                   type="email"
                   className="form-input w-full"
                   placeholder="Your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div>
@@ -53,11 +68,13 @@ export default function SignIn() {
                   type="password"
                   className="form-input w-full"
                   placeholder="Your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
             </div>
             <div className="mt-6 space-y-5">
-              <button className="btn w-full bg-linear-to-t from-indigo-600 to-indigo-500 bg-[length:100%_100%] bg-[bottom] text-white shadow-[inset_0px_1px_0px_0px_--theme(--color-white/.16)] hover:bg-[length:100%_150%]">
+              <button type="submit" className="btn w-full bg-linear-to-t from-indigo-600 to-indigo-500 bg-[length:100%_100%] bg-[bottom] text-white shadow-[inset_0px_1px_0px_0px_--theme(--color-white/.16)] hover:bg-[length:100%_150%]">
                 Sign in
               </button>
               <div className="flex items-center gap-3 text-center text-sm italic text-gray-600 before:h-px before:flex-1 before:bg-linear-to-r before:from-transparent before:via-gray-400/25 after:h-px after:flex-1 after:bg-linear-to-r after:from-transparent after:via-gray-400/25">

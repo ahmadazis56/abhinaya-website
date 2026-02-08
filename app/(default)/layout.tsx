@@ -1,18 +1,24 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
-import Footer from "@/components/ui/footer";
-import NewNavbar from "@/components/ui/new-navbar";
+import ProfessionalNavbar from "@/components/ui/ProfessionalNavbar";
 
 export default function DefaultLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
+  const isAdminPage = pathname.startsWith("/admin");
+
   useEffect(() => {
     AOS.init({
       once: true,
@@ -20,14 +26,12 @@ export default function DefaultLayout({
       duration: 600,
       easing: "ease-out-sine",
     });
-  });
+  }, []);
 
   return (
     <>
-      <NewNavbar />
-      <main className="relative flex grow flex-col pt-16">{children}</main>
-
-      <Footer />
+      {!isAdminPage && <ProfessionalNavbar />}
+      <main className="relative flex grow flex-col">{children}</main>
     </>
   );
 }

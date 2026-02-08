@@ -1,4 +1,30 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "typescript.suggest.autoImports": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "github.copilot.enable": {
+    "*": true
+  },
+  "github.copilot.inlineSuggest.enable": true,
+  "github.copilot.advanced": {
+    "inlineSuggestCount": 5
+  },
+  "windsurf.ai.autoAccept": true,
+  "windsurf.ai.autoComplete": true,
+  "windsurf.ai.suggestions.autoAccept": true,
+  "windsurf.suggest.autoTrigger": true,
+  "windsurf.inline.completions.enabled": true,
+  "windsurf.ai.acceptOnTab": true,
+  "windsurf.ai.acceptOnEnter": false,
+  "editor.inlineSuggest.showToolbar": "onHover",
+  "editor.acceptSuggestionOnEnter": "on",
+  "editor.suggest.insertMode": "replace",
+  "editor.wordBasedSuggestions": "allDocuments",
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": true,
+    "strings": true
+  }
 }

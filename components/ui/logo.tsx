@@ -9,14 +9,14 @@ export default function Logo() {
         <Image
           src="/images/logo.png"
           alt="Abhinaya Indo Group Logo"
-          width={40}
-          height={40}
+          width={80}
+          height={80}
           className="object-contain"
         />
       </div>
       {/* Text */}
       <div className="flex flex-col">
-        <span className="text-2xl font-extrabold text-white">ABHINAYA INDO GROUP</span>
+        <span className="text-sm font-bold text-white">ABHINAYA INDO GROUP</span>
       </div>
     </Link>
   );
