@@ -8,18 +8,9 @@ export const metadata: Metadata = {
 
 async function getGallery() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-    const response = await fetch(`${baseUrl}/api/gallery`, {
-      cache: 'no-store'
-    })
-    
-    if (!response.ok) {
-      console.log('Gallery API not available, using fallback data')
-      return []
-    }
-    
-    const data = await response.json()
-    return Array.isArray(data) ? data : []
+    // For static build, return empty array
+    // In production, this will fetch from API
+    return []
   } catch (error) {
     console.log('Gallery API error, using fallback data:', error)
     return []

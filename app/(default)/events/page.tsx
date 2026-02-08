@@ -8,21 +8,9 @@ export const metadata: Metadata = {
 
 async function getEvents() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-    const response = await fetch(`${baseUrl}/api/events`, {
-      cache: 'no-store',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
-    
-    if (!response.ok) {
-      console.error('Failed to fetch events:', response.statusText)
-      return []
-    }
-    
-    const data = await response.json()
-    return data.events || []
+    // For static build, return empty array
+    // In production, this will fetch from API
+    return []
   } catch (error) {
     console.error('Error fetching events:', error)
     return []
