@@ -10,7 +10,9 @@
     "lint": "next lint",
     "db:seed": "tsx lib/seed.ts",
     "db:migrate": "prisma migrate dev",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "deploy": "vercel --prod",
+    "deploy:preview": "vercel"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
