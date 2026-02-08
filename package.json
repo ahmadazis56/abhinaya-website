@@ -11,7 +11,7 @@
     "db:seed": "tsx lib/seed.ts",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
-    "postinstall": "prisma generate",
+    "postinstall": "npx prisma generate",
     "deploy": "vercel --prod",
     "deploy:preview": "vercel"
   },
