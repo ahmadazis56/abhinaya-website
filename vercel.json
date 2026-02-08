@@ -2,15 +2,5 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
   "installCommand": "npm install",
-  "framework": "nextjs",
-  "regions": ["sin1"],
-  "functions": {
-    "app/api/**/*.ts": {
-      "maxDuration": 30
-    }
-  },
-  "env": {
-    "NEXTAUTH_URL": "https://abhinaya-website.vercel.app",
-    "NEXTAUTH_SECRET": "lIOFWTo5z0rTV8ufZqNszkiuhQBY8sXFbsKo9gZCluo="
-  }
+  "framework": "nextjs"
 }
