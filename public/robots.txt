@@ -1,0 +1,5 @@
+# Abhinaya Indo Group - Production robots
+User-agent: *
+Allow: /
+
+Sitemap: https://abhinaya.co.id/sitemap.xml
