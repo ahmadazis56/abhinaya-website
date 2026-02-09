@@ -36,20 +36,33 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const bytes = await image.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-    
-    const filename = `${Date.now()}-${image.name}`
-    const uploadDir = join(process.cwd(), 'public', 'uploads', 'flyers')
-    
-    try {
-      await writeFile(join(uploadDir, filename), buffer)
-    } catch (error) {
-      console.error('Error saving image:', error)
-      return NextResponse.json(
-        { error: 'Failed to save image' },
-        { status: 500 }
-      )
+    let imagePath = null
+    if (image) {
+      try {
+        // For Vercel deployment, use cloud storage or skip image upload
+        if (process.env.NODE_ENV === 'production') {
+          // In production, store image data as base64 or use cloud storage
+          const bytes = await image.arrayBuffer()
+          const base64 = Buffer.from(bytes).toString('base64')
+          imagePath = `data:${image.type};base64,${base64}`
+        } else {
+          // Local development - save to filesystem
+          const bytes = await image.arrayBuffer()
+          const buffer = Buffer.from(bytes)
+          
+          const filename = `${Date.now()}-${image.name}`
+          const uploadDir = join(process.cwd(), 'public', 'uploads', 'flyers')
+          
+          await writeFile(join(uploadDir, filename), buffer)
+          imagePath = `/uploads/flyers/${filename}`
+        }
+      } catch (error) {
+        console.error('Error processing image:', error)
+        return NextResponse.json(
+          { error: 'Failed to process image' },
+          { status: 500 }
+        )
+      }
     }
 
     const newFlyer = await prisma.flyerItem.create({
@@ -57,7 +70,7 @@ export async function POST(request: NextRequest) {
         title,
         description,
         isActive,
-        image: `/uploads/flyers/${filename}`
+        image: imagePath || ''
       }
     })
 
