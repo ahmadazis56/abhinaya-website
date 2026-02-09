@@ -53,15 +53,19 @@ export function extractTokenFromRequest(request: Request): string | null {
 
 export async function requireAuth(request: Request): Promise<JWTPayload | null> {
   const token = extractTokenFromRequest(request)
+  console.log('Token extracted:', token ? 'exists' : 'missing')
   if (!token) {
     return null
   }
-  return verifyToken(token)
+  const payload = verifyToken(token)
+  console.log('Token verification result:', payload)
+  return payload
 }
 
 export async function requireAdmin(request: Request): Promise<JWTPayload | null> {
   const payload = await requireAuth(request)
-  if (!payload || payload.role !== 'ADMIN') {
+  if (!payload || (payload.role !== 'ADMIN' && payload.role !== 'SUPER_ADMIN')) {
+    console.log('Admin auth failed - payload:', payload)
     return null
   }
   return payload
