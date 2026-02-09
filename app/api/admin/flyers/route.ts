@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const flyers = await (prisma as any).flyerItem.findMany({
+    const flyers = await prisma.flyerItem.findMany({
       orderBy: { createdAt: 'desc' }
     })
 
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const flyer = await (prisma as any).flyerItem.create({
+    const flyer = await prisma.flyerItem.create({
       data: {
         title,
         description,
