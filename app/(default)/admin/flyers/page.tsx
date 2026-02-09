@@ -59,23 +59,40 @@ export default function ManageFlyersPage() {
       formData.append('description', newItem.description);
       formData.append('image', newItem.image);
 
+      console.log('Creating flyer with data:', {
+        title: newItem.title,
+        description: newItem.description,
+        image: newItem.image.name,
+        size: newItem.image.size
+      });
+
+      const token = localStorage.getItem('adminToken');
+      console.log('Using token:', token ? 'exists' : 'missing');
+
       const response = await fetch('/api/admin/flyers', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+          'Authorization': `Bearer ${token}`
         },
         body: formData,
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+
       if (response.ok) {
+        const result = await response.json();
+        console.log('Success response:', result);
         setNewItem({ title: "", description: "", image: null });
         await fetchFlyers();
       } else {
-        alert('Failed to create flyer');
+        const errorData = await response.json();
+        console.error('Error response:', errorData);
+        alert(`Failed to create flyer: ${errorData.error || 'Unknown error'}`);
       }
     } catch (error) {
       console.error('Error creating flyer:', error);
-      alert('Error creating flyer');
+      alert(`Error creating flyer: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
