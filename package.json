@@ -11,15 +11,14 @@
     "db:seed": "tsx lib/seed.ts",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
-    "postinstall": "npx prisma generate || true",
+    "postinstall": "npx prisma generate || echo 'prisma generate failed'",
     "deploy": "vercel --prod",
     "deploy:preview": "vercel"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
     "@headlessui/react": "^2.2.0",
-    "@prisma/adapter-better-sqlite3": "^7.3.0",
-    "@prisma/client": "^7.3.0",
+    "@prisma/client": "^5.22.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/better-sqlite3": "^7.6.13",
     "@types/jsonwebtoken": "^9.0.10",
