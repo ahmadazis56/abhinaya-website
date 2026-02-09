@@ -53,12 +53,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to save image' }, { status: 500 })
     }
 
+    const imagePath = `/uploads/gallery/${filename}`
+
     const galleryItem = await prisma.gallery.create({
       data: {
         title,
         description,
         category,
-        image: `/uploads/gallery/${filename}`
+        image: imagePath || ''
       }
     })
 

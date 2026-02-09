@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
           title,
           description,
           date: date ? new Date(date) : new Date(),
-          image: imagePath
+          image: imagePath || ''
         }
       })
       return NextResponse.json(event)
