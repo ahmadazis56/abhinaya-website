@@ -9,31 +9,29 @@ async function createAdmin() {
 
     const hashedPassword = await bcrypt.hash('admin123', 10);
 
-    const superAdmin = await prisma.user.upsert({
+    const superAdmin = await prisma.admin.upsert({
       where: { email: 'admin@abhinaya.com' },
       update: {},
       create: {
         email: 'admin@abhinaya.com',
-        name: 'Super Admin',
         password: hashedPassword,
-        role: 'ADMIN'
+        role: 'SUPER_ADMIN'
       }
     });
 
-    const admin = await prisma.user.upsert({
+    const admin = await prisma.admin.upsert({
       where: { email: 'manager@abhinaya.com' },
       update: {},
       create: {
         email: 'manager@abhinaya.com',
-        name: 'Admin Manager',
         password: hashedPassword,
         role: 'ADMIN'
       }
     });
 
     console.log('Admin users created successfully!');
-    console.log('Admin: admin@abhinaya.com / admin123');
-    console.log('Manager: manager@abhinaya.com / admin123');
+    console.log('Super Admin: admin@abhinaya.com / admin123');
+    console.log('Admin: manager@abhinaya.com / admin123');
 
   } catch (error) {
     console.error('Error creating admin:', error);

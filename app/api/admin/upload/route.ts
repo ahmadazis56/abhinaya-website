@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/auth'
-import { writeFile } from 'fs/promises'
+import { writeFile, mkdir } from 'fs/promises'
 import { join } from 'path'
 
 export async function POST(request: NextRequest) {
@@ -25,16 +25,26 @@ export async function POST(request: NextRequest) {
     const uploadDir = join(process.cwd(), 'public', 'uploads', type)
     
     try {
+      // Ensure upload directory exists
+      await mkdir(uploadDir, { recursive: true })
+      
       await writeFile(join(uploadDir, filename), buffer)
       const url = `/uploads/${type}/${filename}`
       
+      console.log('File uploaded successfully:', url)
       return NextResponse.json({ url })
     } catch (error) {
       console.error('Error saving file:', error)
-      return NextResponse.json({ error: 'Failed to save file' }, { status: 500 })
+      return NextResponse.json({ 
+        error: 'Failed to save file',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      }, { status: 500 })
     }
   } catch (error) {
     console.error('Upload error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 })
   }
 }

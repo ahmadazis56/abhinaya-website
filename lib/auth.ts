@@ -1,29 +1,44 @@
-const ADMIN_CREDENTIALS = {
-  email: 'admin@abhinaya.com',
-  password: 'admin123'
-}
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+import { prisma } from './database'
 
-export { ADMIN_CREDENTIALS }
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-in-production'
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h'
 
 export interface JWTPayload {
   email: string
   role: string
+  iat?: number
+  exp?: number
+}
+
+export interface AdminUser {
+  id: string
+  email: string
+  role: string
+  createdAt: Date
+  updatedAt: Date
+}
+
+export async function hashPassword(password: string): Promise<string> {
+  const saltRounds = 12
+  return bcrypt.hash(password, saltRounds)
+}
+
+export async function verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
+  return bcrypt.compare(password, hashedPassword)
+}
+
+export function generateToken(payload: Omit<JWTPayload, 'iat' | 'exp'>): string {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as jwt.SignOptions)
 }
 
 export function verifyToken(token: string): JWTPayload | null {
   try {
-    const decoded = Buffer.from(token, 'base64').toString('utf-8')
-    const [email] = decoded.split(':')
-    
-    if (email === ADMIN_CREDENTIALS.email) {
-      return {
-        email: ADMIN_CREDENTIALS.email,
-        role: 'ADMIN'
-      }
-    }
-    
-    return null
+    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload
+    return decoded
   } catch (error) {
+    console.error('Token verification failed:', error)
     return null
   }
 }
@@ -50,4 +65,54 @@ export async function requireAdmin(request: Request): Promise<JWTPayload | null>
     return null
   }
   return payload
+}
+
+export async function createAdminUser(email: string, password: string): Promise<AdminUser> {
+  const hashedPassword = await hashPassword(password)
+  
+  const admin = await prisma.admin.upsert({
+    where: { email },
+    update: { password: hashedPassword },
+    create: {
+      email,
+      password: hashedPassword,
+      role: 'ADMIN'
+    }
+  })
+  
+  return {
+    id: admin.id,
+    email: admin.email,
+    role: admin.role,
+    createdAt: admin.createdAt,
+    updatedAt: admin.updatedAt
+  }
+}
+
+export async function authenticateAdmin(email: string, password: string): Promise<AdminUser | null> {
+  try {
+    const admin = await prisma.admin.findUnique({
+      where: { email }
+    })
+    
+    if (!admin) {
+      return null
+    }
+    
+    const isValidPassword = await verifyPassword(password, admin.password)
+    if (!isValidPassword) {
+      return null
+    }
+    
+    return {
+      id: admin.id,
+      email: admin.email,
+      role: admin.role,
+      createdAt: admin.createdAt,
+      updatedAt: admin.updatedAt
+    }
+  } catch (error) {
+    console.error('Authentication error:', error)
+    return null
+  }
 }

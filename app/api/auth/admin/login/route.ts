@@ -1,25 +1,52 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { ADMIN_CREDENTIALS } from '@/lib/auth'
+import { authenticateAdmin, generateToken } from '@/lib/auth'
+import { z } from 'zod'
+
+const loginSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(1, 'Password is required')
+})
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json()
+    const body = await request.json()
+    
+    // Validate input
+    const validation = loginSchema.safeParse(body)
+    if (!validation.success) {
+      return NextResponse.json({ 
+        error: 'Validation failed', 
+        details: validation.error.issues 
+      }, { status: 400 })
+    }
+    
+    const { email, password } = validation.data
 
-    if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
-      const token = Buffer.from(`${email}:${password}`).toString('base64')
-      
-      return NextResponse.json({
-        token,
-        user: {
-          email: ADMIN_CREDENTIALS.email,
-          role: 'ADMIN'
-        }
-      })
+    // Authenticate admin
+    const admin = await authenticateAdmin(email, password)
+    if (!admin) {
+      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
     }
 
-    return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
+    // Generate secure JWT token
+    const token = generateToken({
+      email: admin.email,
+      role: admin.role
+    })
+    
+    return NextResponse.json({
+      token,
+      user: {
+        id: admin.id,
+        email: admin.email,
+        role: admin.role
+      }
+    })
   } catch (error) {
     console.error('Login error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ 
+      error: 'Internal server error',
+      message: 'An unexpected error occurred during login'
+    }, { status: 500 })
   }
 }
