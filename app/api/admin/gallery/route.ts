@@ -40,20 +40,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Title and image are required' }, { status: 400 })
     }
 
-    const bytes = await image.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-    
-    const filename = `${Date.now()}-${image.name}`
-    const uploadDir = join(process.cwd(), 'public', 'uploads', 'gallery')
-    
-    try {
-      await writeFile(join(uploadDir, filename), buffer)
-    } catch (error) {
-      console.error('Error saving image:', error)
-      return NextResponse.json({ error: 'Failed to save image' }, { status: 500 })
+    let imagePath = null
+    if (image) {
+      try {
+        // For Vercel deployment, use cloud storage or skip image upload
+        if (process.env.NODE_ENV === 'production') {
+          // In production, store image data as base64 or use cloud storage
+          const bytes = await image.arrayBuffer()
+          const base64 = Buffer.from(bytes).toString('base64')
+          imagePath = `data:${image.type};base64,${base64}`
+        } else {
+          // Local development - save to filesystem
+          const bytes = await image.arrayBuffer()
+          const buffer = Buffer.from(bytes)
+          
+          const filename = `${Date.now()}-${image.name}`
+          const uploadDir = join(process.cwd(), 'public', 'uploads', 'gallery')
+          
+          await writeFile(join(uploadDir, filename), buffer)
+          imagePath = `/uploads/gallery/${filename}`
+        }
+      } catch (error) {
+        console.error('Error processing image:', error)
+        return NextResponse.json({ error: 'Failed to process image' }, { status: 500 })
+      }
     }
-
-    const imagePath = `/uploads/gallery/${filename}`
 
     const galleryItem = await prisma.gallery.create({
       data: {
@@ -67,7 +78,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(galleryItem)
   } catch (error) {
     console.error('Error creating gallery item:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to create gallery item' }, { status: 500 })
   }
 }
 
@@ -103,26 +114,35 @@ export async function PUT(request: NextRequest) {
 
     // If a new image is provided, upload it and delete the old one
     if (image) {
-      const bytes = await image.arrayBuffer()
-      const buffer = Buffer.from(bytes)
-      
-      const filename = `${Date.now()}-${image.name}`
-      const uploadDir = join(process.cwd(), 'public', 'uploads', 'gallery')
-      
       try {
-        await writeFile(join(uploadDir, filename), buffer)
-        
-        // Delete the old image file
-        if (existingItem.image) {
-          try {
-            const oldImagePath = join(process.cwd(), 'public', existingItem.image)
-            await unlink(oldImagePath)
-          } catch (error) {
-            console.error('Error deleting old image file:', error)
+        // For Vercel deployment, use cloud storage or skip image upload
+        if (process.env.NODE_ENV === 'production') {
+          // In production, store image data as base64 or use cloud storage
+          const bytes = await image.arrayBuffer()
+          const base64 = Buffer.from(bytes).toString('base64')
+          imagePath = `data:${image.type};base64,${base64}`
+        } else {
+          // Local development - save to filesystem
+          const bytes = await image.arrayBuffer()
+          const buffer = Buffer.from(bytes)
+          
+          const filename = `${Date.now()}-${image.name}`
+          const uploadDir = join(process.cwd(), 'public', 'uploads', 'gallery')
+          
+          await writeFile(join(uploadDir, filename), buffer)
+          
+          // Delete old image file
+          if (existingItem.image) {
+            try {
+              const oldImagePath = join(process.cwd(), 'public', existingItem.image)
+              await unlink(oldImagePath)
+            } catch (error) {
+              console.error('Error deleting old image file:', error)
+            }
           }
+          
+          imagePath = `/uploads/gallery/${filename}`
         }
-        
-        imagePath = `/uploads/gallery/${filename}`
       } catch (error) {
         console.error('Error saving new image:', error)
         return NextResponse.json({ error: 'Failed to save new image' }, { status: 500 })
