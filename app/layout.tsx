@@ -2,7 +2,6 @@ import "./css/style.css";
 
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import localFont from "next/font/local";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -10,13 +9,8 @@ const inter = Inter({
   display: "swap",
 });
 
-const nacelle = localFont({
-  src: [
-    { path: "../public/fonts/nacelle-regular.woff2", weight: "400", style: "normal" },
-    { path: "../public/fonts/nacelle-italic.woff2", weight: "400", style: "italic" },
-    { path: "../public/fonts/nacelle-semibold.woff2", weight: "600", style: "normal" },
-    { path: "../public/fonts/nacelle-semibolditalic.woff2", weight: "600", style: "italic" },
-  ],
+const nacelle = Inter({
+  subsets: ["latin"],
   variable: "--font-nacelle",
   display: "swap",
 });

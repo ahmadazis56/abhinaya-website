@@ -16,6 +16,7 @@ model Event {
   description String?
   date        DateTime @default(now())
   image       String?
+  isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -26,6 +27,7 @@ model Gallery {
   description String?
   image       String
   category    String?
+  isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

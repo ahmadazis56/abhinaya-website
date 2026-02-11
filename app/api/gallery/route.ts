@@ -6,6 +6,7 @@ import { prisma } from '@/lib/database'
 export async function GET() {
   try {
     const gallery = await prisma.gallery.findMany({
+      where: { isActive: true },
       orderBy: { createdAt: 'desc' }
     })
     
@@ -69,7 +70,8 @@ export async function POST(request: NextRequest) {
         title,
         description,
         category,
-        image: imagePath || ''
+        image: imagePath || '',
+        isActive: true
       }
     })
 
@@ -104,6 +106,35 @@ export async function DELETE(request: NextRequest) {
     console.error('Error deleting gallery item:', error)
     return NextResponse.json(
       { error: 'Failed to delete gallery item' },
+      { status: 500 }
+    )
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+    
+    if (!id) {
+      return NextResponse.json(
+        { error: 'ID is required' },
+        { status: 400 }
+      )
+    }
+
+    const { isActive } = await request.json()
+    
+    const gallery = await prisma.gallery.update({
+      where: { id: parseInt(id) },
+      data: { isActive }
+    })
+
+    return NextResponse.json(gallery)
+  } catch (error) {
+    console.error('Error updating gallery:', error)
+    return NextResponse.json(
+      { error: 'Failed to update gallery' },
       { status: 500 }
     )
   }
