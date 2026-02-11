@@ -29,12 +29,7 @@ export default function EventsPage() {
 
   const fetchEvents = async () => {
     try {
-      const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/dashboard/events', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await fetch('/api/dashboard/events');
       if (response.ok) {
         const data = await response.json();
         setEvents(data);
@@ -58,12 +53,8 @@ export default function EventsPage() {
         formData.append('image', newEvent.image);
       }
 
-      const token = localStorage.getItem('adminToken');
       const response = await fetch('/api/dashboard/events', {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
         body: formData,
       });
 
@@ -85,12 +76,8 @@ export default function EventsPage() {
     if (!confirm('Are you sure you want to delete this event?')) return;
 
     try {
-      const token = localStorage.getItem('adminToken');
       const response = await fetch(`/api/dashboard/events?id=${id}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
       });
 
       if (response.ok) {
@@ -106,12 +93,10 @@ export default function EventsPage() {
 
   const handleToggleActive = async (id: number, isActive: boolean) => {
     try {
-      const token = localStorage.getItem('adminToken');
       const response = await fetch(`/api/dashboard/events?id=${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ isActive }),
       });

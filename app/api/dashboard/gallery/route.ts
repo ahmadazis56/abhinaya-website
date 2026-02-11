@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAdmin } from '@/lib/auth'
 import { writeFile } from 'fs/promises'
 import { join } from 'path'
 
 export async function GET(request: NextRequest) {
   try {
-    const auth = await requireAdmin(request)
-    if (!auth) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
     // Try database operations with fallback
     try {
       const { prisma } = await import('@/lib/database')

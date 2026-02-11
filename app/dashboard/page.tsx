@@ -1,53 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-
-interface User {
-  id: string;
-  email: string;
-  role: string;
-}
+import { useState } from "react";
 
 export default function DashboardPage() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-
-  useEffect(() => {
-    // Check authentication
-    const token = localStorage.getItem('adminToken');
-    const userStr = localStorage.getItem('adminUser');
-    
-    if (!token || !userStr) {
-      router.push('/login');
-      return;
-    }
-
-    try {
-      const userData = JSON.parse(userStr);
-      setUser(userData);
-    } catch (error) {
-      console.error('Error parsing user data:', error);
-      router.push('/login');
-    } finally {
-      setLoading(false);
-    }
-  }, [router]);
-
   const handleLogout = () => {
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminUser');
-    router.push('/login');
+    // No logout needed - just redirect
+    window.location.href = '/';
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -57,13 +16,13 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-              <p className="text-sm text-gray-600">Welcome back, {user?.email}</p>
+              <p className="text-sm text-gray-600">Welcome to admin panel</p>
             </div>
             <button
               onClick={handleLogout}
               className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
             >
-              Logout
+              Back to Site
             </button>
           </div>
         </div>
