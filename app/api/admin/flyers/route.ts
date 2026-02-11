@@ -48,6 +48,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Title and image are required' }, { status: 400 })
     }
 
+    // Check image size (max 5MB)
+    if (image.size > 5 * 1024 * 1024) {
+      console.log('Image too large:', image.size)
+      return NextResponse.json({ 
+        error: 'Image too large', 
+        details: 'Maximum file size is 5MB'
+      }, { status: 413 })
+    }
+
     let imagePath = null
     if (image) {
       try {
