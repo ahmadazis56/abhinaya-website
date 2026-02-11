@@ -17,7 +17,6 @@ export default function DefaultLayout({
 }) {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
-  const isAdminPage = pathname.startsWith("/admin");
 
   useEffect(() => {
     AOS.init({
@@ -30,7 +29,7 @@ export default function DefaultLayout({
 
   return (
     <>
-      {!isAdminPage && <ProfessionalNavbar />}
+      <ProfessionalNavbar />
       <main className="relative flex grow flex-col">{children}</main>
     </>
   );

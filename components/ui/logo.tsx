@@ -7,7 +7,7 @@ export default function Logo() {
       {/* Logo Perusahaan */}
       <div className="flex items-center justify-center">
         <Image
-          src="/images/logo.png"
+          src="https://via.placeholder.com/80x80/0e6d7c/ffffff?text=ABHINAYA"
           alt="Abhinaya Indo Group Logo"
           width={80}
           height={80}

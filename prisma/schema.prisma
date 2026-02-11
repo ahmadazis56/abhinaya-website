@@ -42,11 +42,3 @@ model FlyerItem {
   updatedAt   DateTime @updatedAt
 }
 
-model Admin {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  role      String   @default("ADMIN")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}

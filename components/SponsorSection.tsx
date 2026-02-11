@@ -13,13 +13,13 @@ const sponsors: SponsorItem[] = [
   {
     id: 1,
     name: "Tech Innovation Lab",
-    logo: "/images/1.png",
+    logo: "https://via.placeholder.com/200x100/0e6d7c/ffffff?text=Tech+Innovation",
     link: "#"
   },
   {
     id: 2,
     name: "Digital Creative Agency",
-    logo: "/images/2.png",
+    logo: "https://via.placeholder.com/200x100/14aecf/ffffff?text=Digital+Creative",
     link: "#"
   }
 ];
@@ -53,7 +53,7 @@ const SponsorSection: React.FC = () => {
         <div className="relative w-full h-[600px] mt-16 p-6">
           <div className="relative w-full h-full rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
             <Image
-              src="/images/flayer_1.jpeg"
+              src="https://via.placeholder.com/800x600/0e6d7c/ffffff?text=Featured+Partner"
               alt="Featured Partner"
               fill
               className="object-contain group-hover:scale-105 transition-transform duration-700"

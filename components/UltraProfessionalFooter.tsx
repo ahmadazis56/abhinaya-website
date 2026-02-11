@@ -76,7 +76,7 @@ export default function UltraProfessionalFooter() {
               <div className="flex items-center space-x-4 mb-6">
                 <div className="relative w-24 h-24">
                   <Image
-                    src="/images/logo.png"
+                    src="https://via.placeholder.com/96x96/0e6d7c/ffffff?text=ABHINAYA"
                     alt="Abhinaya Indo Group Logo"
                     fill
                     className="object-contain"

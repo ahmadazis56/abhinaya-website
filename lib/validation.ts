@@ -41,18 +41,6 @@ export const createFlyerSchema = z.object({
 
 export const updateFlyerSchema = createFlyerSchema.partial()
 
-// Admin validation schemas
-export const loginSchema = z.object({
-  email: z.string().email('Invalid email format'),
-  password: z.string().min(1, 'Password is required')
-})
-
-export const createAdminSchema = z.object({
-  email: z.string().email('Invalid email format'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  role: z.string().default('ADMIN')
-})
-
 // Content validation schemas
 export const clientSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100, 'Name too long'),
