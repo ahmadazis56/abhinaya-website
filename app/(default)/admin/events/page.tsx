@@ -8,6 +8,7 @@ interface Event {
   description: string;
   date: string;
   image?: string;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -150,9 +151,65 @@ export default function ManageEventsPage() {
     }
   };
 
+  const handleToggleActive = async (id: number, isActive: boolean) => {
+    try {
+      // Ambil token dari cookies
+      const getCookie = (name: string) => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop()?.split(';').shift();
+        return null;
+      };
+      
+      const token = getCookie('adminToken');
+      if (!token) {
+        alert('Please login first');
+        window.location.href = '/admin/login';
+        return;
+      }
+
+      const response = await fetch(`/api/events?id=${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ isActive }),
+      });
+
+      if (response.ok) {
+        await fetchEvents();
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.error || 'Failed to update event status';
+        console.error('Server error:', errorData);
+        alert(`Error: ${errorMessage}`);
+      }
+    } catch (error) {
+      console.error('Error updating event status:', error);
+      alert('Network error. Please check your connection and try again.');
+    }
+  };
+
+  const activeEvents = events.filter(e => e.isActive).length;
+  const inactiveEvents = events.length - activeEvents;
+
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8">Manage Events</h1>
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Manage Events</h1>
+          <p className="text-gray-600">Create and manage events</p>
+          <div className="flex gap-4 mt-2">
+            <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+              {activeEvents} Published
+            </span>
+            <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">
+              {inactiveEvents} Draft
+            </span>
+          </div>
+        </div>
+      </div>
 
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <h2 className="text-xl font-bold mb-4">Create New Event</h2>
@@ -230,7 +287,20 @@ export default function ManageEventsPage() {
               <div key={event.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
-                    <h3 className="text-lg font-bold text-gray-900">{event.title}</h3>
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="text-lg font-bold text-gray-900">{event.title}</h3>
+                      <button
+                        onClick={() => handleToggleActive(event.id, !event.isActive)}
+                        className={`px-3 py-1 text-xs rounded-full font-medium transition-colors ${
+                          event.isActive
+                            ? 'bg-green-500 text-white hover:bg-green-600'
+                            : 'bg-gray-500 text-white hover:bg-gray-600'
+                        }`}
+                        title={event.isActive ? 'Click to unpublish' : 'Click to publish'}
+                      >
+                        {event.isActive ? '✓ Published' : '○ Draft'}
+                      </button>
+                    </div>
                     {event.date && (
                       <p className="text-sm text-gray-600 mb-2">
                         Date: {new Date(event.date).toLocaleDateString()}

@@ -8,6 +8,7 @@ interface GalleryItem {
   description: string;
   category: string;
   image: string;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -156,9 +157,48 @@ export default function ManageGalleryPage() {
     }
   };
 
+  const handleToggleActive = async (id: number, isActive: boolean) => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`/api/gallery?id=${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ isActive }),
+      });
+
+      if (response.ok) {
+        await fetchGallery();
+      } else {
+        alert('Failed to update gallery status');
+      }
+    } catch (error) {
+      console.error('Error updating gallery status:', error);
+      alert('Error updating gallery status');
+    }
+  };
+
+  const activeItems = gallery.filter(g => g.isActive).length;
+  const inactiveItems = gallery.length - activeItems;
+
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8">Manage Gallery</h1>
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Manage Gallery</h1>
+          <p className="text-gray-600">Upload and manage gallery items</p>
+          <div className="flex gap-4 mt-2">
+            <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+              {activeItems} Published
+            </span>
+            <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">
+              {inactiveItems} Draft
+            </span>
+          </div>
+        </div>
+      </div>
 
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <h2 className="text-xl font-bold mb-4">Add New Gallery Item</h2>
@@ -247,11 +287,24 @@ export default function ManageGalleryPage() {
                     alt={item.title}
                     className="w-full h-full object-cover"
                   />
-                  {item.category && (
-                    <span className="absolute top-2 left-2 px-2 py-1 bg-purple-600 text-white text-xs rounded-full">
-                      {item.category}
-                    </span>
-                  )}
+                  <div className="absolute top-2 right-2 flex gap-2">
+                    {item.category && (
+                      <span className="px-2 py-1 bg-purple-600 text-white text-xs rounded-full">
+                        {item.category}
+                      </span>
+                    )}
+                    <button
+                      onClick={() => handleToggleActive(item.id, !item.isActive)}
+                      className={`px-3 py-1 text-xs rounded-full font-medium transition-colors ${
+                        item.isActive
+                          ? 'bg-green-500 text-white hover:bg-green-600'
+                          : 'bg-gray-500 text-white hover:bg-gray-600'
+                      }`}
+                      title={item.isActive ? 'Click to unpublish' : 'Click to publish'}
+                    >
+                      {item.isActive ? '✓ Published' : '○ Draft'}
+                    </button>
+                  </div>
                 </div>
                 <div className="p-4">
                   <h3 className="font-bold text-gray-900 mb-1">{item.title}</h3>
